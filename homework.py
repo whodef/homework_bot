@@ -32,7 +32,7 @@ STATUS_CODE_ERROR = (
 
 UNKNOWN_STATUS_ERROR = 'Неизвестный статус: {}'
 
-STATUS_CHANGED = 'Изменился статус проверки работы "{}". {}'
+CHANGED_STATUS = 'Изменился статус проверки работы "{}". {}'
 
 NOT_DICT_RESPONSE = 'Ответ API не является словарем'
 
@@ -51,9 +51,9 @@ HOMEWORK_NAME_NOT_FOUND = 'Не найден ключ "homework_name"'
 SEND_MESSAGE_ERROR = 'Ошибка при отправке сообщения: {}'
 
 VERDICTS = {
-    'approved': 'Ваш проект проверен, критических замечаний нет!',
-    'reviewing': 'Ваш проект на стадии проверки ревьюером.',
-    'rejected': 'Ваш проект проверен, но там ещё есть, что поправить.'
+    'approved': 'Работа проверена: ревьюеру всё понравилось. Ура!',
+    'reviewing': 'Работа взята на проверку ревьюером.',
+    'rejected': 'Работа проверена: у ревьюера есть замечания.'
 }
 
 
@@ -139,7 +139,7 @@ def parse_status(homework):
     if status not in VERDICTS:
         raise ValueError(UNKNOWN_STATUS_ERROR.format(status))
 
-    return STATUS_CHANGED.format(homework['homework_name'], VERDICTS.get(status))
+    return CHANGED_STATUS.format(homework['homework_name'], VERDICTS.get(status))
 
 
 def check_tokens():
