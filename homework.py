@@ -59,29 +59,30 @@ VERDICTS = {
 
 class ResponseErrorException(Exception):
     """Исключение при отсутствии ответа."""
+
     pass
 
 
 class StatusCodeErrorException(Exception):
     """Исключение если код запроса не равен 200."""
+
     pass
 
 
 class TokenErrorException(Exception):
     """Исключение при возникновении ошибок в токенах."""
+
     pass
 
 
 def send_message(bot, message):
     """Отправляет сообщение в Telegram чат."""
-
     bot.send_message(TELEGRAM_CHAT_ID, message)
     logging.info(SEND_MESSAGE_INFO_LOG.format(message))
 
 
 def get_api_answer(current_timestamp):
     """Делает запрос к единственному эндпоинту API-сервиса."""
-
     params = dict(
         url=ENDPOINT, headers={'Authorization': f'OAuth {PRACTICUM_TOKEN}'},
         params={'from_date': current_timestamp}
@@ -113,7 +114,6 @@ def get_api_answer(current_timestamp):
 
 def check_response(response):
     """Проверяет ответ API на корректность."""
-
     if type(response) is not dict:
         raise TypeError(NOT_DICT_RESPONSE)
 
@@ -130,7 +130,6 @@ def check_response(response):
 
 def parse_status(homework):
     """Извлекает из информации о конкретной домашней работе статус."""
-
     status = homework['status']
 
     if 'homework_name' not in homework:
@@ -139,19 +138,18 @@ def parse_status(homework):
     if status not in VERDICTS:
         raise ValueError(UNKNOWN_STATUS_ERROR.format(status))
 
-    return CHANGED_STATUS.format(homework['homework_name'], VERDICTS.get(status))
+    return CHANGED_STATUS.format(
+        homework['homework_name'], VERDICTS.get(status))
 
 
 def check_tokens():
     """Проверяет доступность переменных окружения."""
-
     tokens = all([PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID])
     return tokens or logging.critical(TOKEN_NOT_FOUND.format(tokens))
 
 
 def main():
     """Основная логика работы программы."""
-
     if not check_tokens():
         raise TokenErrorException(TOKEN_ERROR)
 
