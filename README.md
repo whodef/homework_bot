@@ -15,11 +15,19 @@
 Cоздать и активировать виртуальное окружение:
 
 
-`python3 -m venv env`
+* `python3 -m venv venv`
 
-`source venv/Scripts/activate`
+* `venv\Scripts\activate.bat - для Windows;`
 
-`python3 -m pip install --upgrade pip`
+* `source venv/bin/activate - для Linux и MacOS.`
+
+* `python3 -m pip install --upgrade pip`
+
+#### Деактивация
+
+Закончив работу в виртуальной среде, вы можете отключить ее, выполнив консольную команду:
+
+`deactivate`
 
 
 Установить зависимости из файла requirements.txt:
