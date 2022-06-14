@@ -150,3 +150,5 @@ static/
 posts/static/
 media/
 
+# Папки и файлы, которые не должны попасть на github (временно)
+api_praktikum.py
