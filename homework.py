@@ -1,20 +1,29 @@
+import os
 import time
 import logging
 from http import HTTPStatus
 
 import telegram
 import requests
+from dotenv import load_dotenv
 
 from requests.exceptions import RequestException
 
 import constants as c
 import error_exceptions as e
 
+load_dotenv()
+
+
+PRACTICUM_TOKEN = os.getenv('PRACTICUM_TOKEN')
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+
 
 def send_message(bot, message):
     """Отправляет сообщение в Telegram чат."""
     try:
-        bot.send_message(c.TELEGRAM_CHAT_ID, text=message)
+        bot.send_message(TELEGRAM_CHAT_ID, text=message)
     except telegram.error.Conflict as error:
         logging.error(c.SEND_MESSAGE_ERROR.format(error=error))
 
@@ -24,7 +33,7 @@ def send_message(bot, message):
 def get_api_answer(current_timestamp):
     """Делает запрос к единственному эндпоинту API-сервиса."""
     params = dict(
-        url=c.ENDPOINT, headers={'Authorization': f'OAuth {c.PRACTICUM_TOKEN}'},
+        url=c.ENDPOINT, headers={'Authorization': f'OAuth {PRACTICUM_TOKEN}'},
         params={'from_date': current_timestamp}
     )
     try:
@@ -84,7 +93,7 @@ def parse_status(homework):
 
 def check_tokens():
     """Проверяет доступность переменных окружения."""
-    tokens = all([c.PRACTICUM_TOKEN, c.TELEGRAM_TOKEN, c.TELEGRAM_CHAT_ID])
+    tokens = all([PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID])
     return tokens or logging.critical(c.TOKEN_NOT_FOUND.format(tokens))
 
 
@@ -93,7 +102,7 @@ def main():
     if not check_tokens():
         raise e.TokenErrorException(c.TOKEN_ERROR)
 
-    bot = telegram.Bot(token=c.TELEGRAM_TOKEN)
+    bot = telegram.Bot(token=TELEGRAM_TOKEN)
     timestamp = int(time.time())
     last_exception_msg = ''
 
@@ -113,7 +122,7 @@ def main():
 
             if not last_exception_msg == message:
                 successfully_sending: bool = bot.send_message(
-                    c.TELEGRAM_CHAT_ID, message
+                    TELEGRAM_CHAT_ID, message
                 )
                 if successfully_sending:
                     last_exception_msg = message

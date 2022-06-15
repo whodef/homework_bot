@@ -1,13 +1,3 @@
-import os
-
-from dotenv import load_dotenv
-
-load_dotenv()
-
-
-PRACTICUM_TOKEN = os.getenv('PRACTICUM_TOKEN')
-TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
-TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 RETRY_TIME = 600
 ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
 SEND_MESSAGE_INFO_LOG = 'Отправлено сообщение: "{}"'
@@ -27,7 +17,8 @@ TOKEN_NOT_FOUND = 'Токен {} не найден!'
 TOKEN_ERROR = 'Ошибка в токенах'
 ERROR_MESSAGE = 'Сбой в работе программы: {}'
 HOMEWORK_NAME_NOT_FOUND = 'Не найден ключ "homework_name"'
-SEND_MESSAGE_ERROR = 'Ошибка при отправке сообщения: {}'
+SEND_MESSAGE_ERROR = (
+    'Telegram Error Conflict:\n Ошибка при отправке сообщения: {}')
 VERDICTS = {
     'approved': 'Работа проверена: ревьюеру всё понравилось. Ура!',
     'reviewing': 'Работа взята на проверку ревьюером.',
