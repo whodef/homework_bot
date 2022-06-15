@@ -6,7 +6,6 @@ from http import HTTPStatus
 import telegram
 import requests
 from dotenv import load_dotenv
-
 from requests.exceptions import RequestException
 
 import constants as c
@@ -24,10 +23,9 @@ def send_message(bot, message):
     """Отправляет сообщение в Telegram чат."""
     try:
         bot.send_message(TELEGRAM_CHAT_ID, text=message)
+        logging.info(c.SEND_MESSAGE_INFO_LOG.format(message))
     except telegram.error.Conflict as error:
         logging.error(c.SEND_MESSAGE_ERROR.format(error=error))
-
-    return logging.info(c.SEND_MESSAGE_INFO_LOG.format(message))
 
 
 def get_api_answer(current_timestamp):
@@ -63,7 +61,7 @@ def get_api_answer(current_timestamp):
 
 def check_response(response):
     """Проверяет ответ API на корректность."""
-    if type(response) is not dict:
+    if not isinstance(response, dict):
         raise TypeError(c.NOT_DICT_RESPONSE)
 
     if 'homeworks' not in response:
