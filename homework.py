@@ -24,7 +24,7 @@ def get_api_answer(current_timestamp):
         params={'from_date': current_timestamp}
     )
     try:
-        response = requests.get(**params)
+        response = requests.get(**params, timeout=60)
     except RequestException as error:
         raise ConnectionError(
             c.API_ANSWER_ERROR.format(error=error, **params))
@@ -91,6 +91,7 @@ def main():
 
     bot = telegram.Bot(token=c.TELEGRAM_TOKEN)
     timestamp = int(time.time())
+    last_exception_msg = ''
 
     while True:
         try:
@@ -101,14 +102,17 @@ def main():
                 send_message(bot, parse_status(homeworks[0]))
 
             timestamp = response.get('current_date', timestamp)
+
         except Exception as error:
             message = c.ERROR_MESSAGE.format(error)
             logging.exception(message)
 
-            try:
-                bot.send_message(c.TELEGRAM_CHAT_ID, message)
-            except Exception as error:
-                logging.exception(c.SEND_MESSAGE_ERROR.format(error))
+            if not last_exception_msg == message:
+                successfully_sending: bool = bot.send_message(
+                    c.TELEGRAM_CHAT_ID, message
+                )
+                if successfully_sending:
+                    last_exception_msg = message
 
         time.sleep(c.RETRY_TIME)
 
