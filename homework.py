@@ -13,8 +13,12 @@ import error_exceptions as e
 
 def send_message(bot, message):
     """Отправляет сообщение в Telegram чат."""
-    bot.send_message(c.TELEGRAM_CHAT_ID, message)
-    logging.info(c.SEND_MESSAGE_INFO_LOG.format(message))
+    try:
+        bot.send_message(c.TELEGRAM_CHAT_ID, text=message)
+    except telegram.error.Conflict as error:
+        logging.error(c.SEND_MESSAGE_ERROR.format(error=error))
+
+    return logging.info(c.SEND_MESSAGE_INFO_LOG.format(message))
 
 
 def get_api_answer(current_timestamp):
@@ -24,7 +28,7 @@ def get_api_answer(current_timestamp):
         params={'from_date': current_timestamp}
     )
     try:
-        response = requests.get(**params, timeout=60)
+        response = requests.get(**params, timeout=30)
     except RequestException as error:
         raise ConnectionError(
             c.API_ANSWER_ERROR.format(error=error, **params))
@@ -96,10 +100,10 @@ def main():
     while True:
         try:
             response = get_api_answer(timestamp)
-            homeworks = check_response(response)
+            homework = check_response(response)
 
-            if homeworks:
-                send_message(bot, parse_status(homeworks[0]))
+            if homework:
+                send_message(bot, parse_status(homework[0]))
 
             timestamp = response.get('current_date', timestamp)
 
