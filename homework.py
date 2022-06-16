@@ -69,7 +69,7 @@ def check_response(response):
 
     homework = response['homeworks']
 
-    if type(homework) is not list:
+    if not isinstance(homework, list):
         raise TypeError(c.HOMEWORK_IS_NOT_LIST)
 
     return response.get('homeworks')
